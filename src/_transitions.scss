@@ -1,0 +1,52 @@
+@import "~@blueprintjs/icons/src/icons";
+@import "~@blueprintjs/core/src/common/react-transition";
+
+// Generate a selector for a page ID by reference
+@function page($ref, $comparator: "$=") {
+  @return '[data-page-id#{$comparator}"#{$ref}"]';
+}
+
+// Generate a selector for a React example by name
+@function example($NameExample, $comparator: "=") {
+  @return '[data-example-id#{$comparator}"#{$NameExample}"]';
+}
+
+$pt-grid-size: 10px !default;
+
+// Transitions
+$pt-transition-ease: cubic-bezier(0.4, 1, 0.75, 0.9) !default;
+$pt-transition-ease-bounce: cubic-bezier(0.54, 1.12, 0.38, 1.11) !default;
+$pt-transition-duration: 100ms !default;
+
+
+// prettier-ignore
+.overlay-transition {
+  $overlay-example-width: $pt-grid-size * 40;
+  $enter: (
+    transform: (translateY(-50vh) rotate(-10deg), translateY(0) rotate(0deg))
+  );
+  $leave: (
+    transform: (translateY(150vh) rotate(-20deg), translateY(0) rotate(0deg))
+  );
+
+  @include react-transition-phase(
+    "#{$ns}-overlay",
+    "enter",
+    $enter,
+    $pt-transition-duration * 3,
+    $pt-transition-ease-bounce,
+    $before: "&"
+  );
+  @include react-transition-phase(
+    "#{$ns}-overlay",
+    "exit",
+    $leave,
+    $pt-transition-duration * 5,
+    $before: "&"
+  );
+
+  top: 0;
+  left: calc(50vw - #{$overlay-example-width / 2});
+  margin: 10vh 0;
+  width: $overlay-example-width;
+}
