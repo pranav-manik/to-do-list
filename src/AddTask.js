@@ -23,23 +23,7 @@ import './_transitions.scss';
 const OVERLAY_EXAMPLE_CLASS = "overlay-transition";
 
 
-// export class TimePickBox extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             disabled: false,
-//             precision: TimePrecision.MINUTE,
-//             selectAllOnFocus: false,
-//             showArrowButtons: false,
-//             useAmPm: true,
-//         }
-//     }
-//     return(<TimePicker />);
-// }
-
-
 // Date formatter
-
 const jsDateFormatter = {
     // note that the native implementation of Date functions differs between browsers
     formatDate: date => date.toLocaleDateString(),
@@ -47,10 +31,19 @@ const jsDateFormatter = {
     placeholder: "M/D/YYYY",
 };
 
+
+
+// handle form errors
 var FormError = (props) => {
     return (<p style={{color: "red", display: props.display}}>Please fill out task name</p>);
 }
 
+var DateError = (props) => {
+    return (<p style={{color: "red", display: props.display}}>Please select a date</p>);
+}
+
+
+// form component
 class Form extends React.Component {
     constructor(props) {
         super(props);
@@ -61,7 +54,8 @@ class Form extends React.Component {
             taskDate: new Date().toLocaleDateString(),
             taskDescription: "",
             isOpen: false,
-            errorDisplay: "none"
+            nameErrorDisplay: "none",
+            dateErrorDisplay: "none"
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -88,19 +82,24 @@ class Form extends React.Component {
       isOpen: this.state.isOpen
     });
     this.props.parentOpenCallback(this.state.isOpen);
-    // console.log(this.state.isOpen);
   }
 
 
   handleSubmit = (e) => {
     e.preventDefault();
-    // verify field has been filled
+    // verify fields has been filled
+
     if (this.state.taskName === "") {
-        this.setState({errorDisplay: "block"});
+        this.setState({nameErrorDisplay: "block"});
     }
+    if (this.state.taskDate === null) {
+            this.setState({dateErrorDisplay: "block"});
+    }
+
     // fields have been filled
-    else {
-        this.setState({errorDisplay: "none"});
+    else if (this.state.taskName !== "" && this.state.taskDate !== null){
+        this.setState({nameErrorDisplay: "none"});
+        this.setState({dateErrorDisplay: "none"});
         var formData = {
             name: this.state.taskName,
             time: this.state.taskTime,
@@ -110,8 +109,6 @@ class Form extends React.Component {
         this.props.formCallback(formData);
         this.toggleChildOverlay();
     }
-    // if ()
-    // console.log(formData);
   }
 
     render() {
@@ -133,7 +130,7 @@ class Form extends React.Component {
                                 required
                             />
                         </FormGroup>
-                        <FormError display={this.state.errorDisplay}/>
+                        <FormError display={this.state.nameErrorDisplay}/>
                         <FormGroup
                             label="Time"
                             labelFor="text-time"
@@ -153,10 +150,11 @@ class Form extends React.Component {
                         <DateInput 
                             {...jsDateFormatter}
                             defaultValue={new Date()} 
-                            onChange={(selectedDate,isUserChange) => this.setState({ taskDate : selectedDate.toLocaleDateString()})}
+                            onChange={(selectedDate,isUserChange) => this.setState({ taskDate : selectedDate == null ? selectedDate : selectedDate.toLocaleDateString()})}
                             required
                         />
                         </Label>
+                        <DateError display={this.state.dateErrorDisplay} />
                         <FormGroup
                             helperText="Brief description of task"
                             label="Description"
@@ -177,7 +175,7 @@ class Form extends React.Component {
                             <Button intent={Intent.DANGER} onClick={this.toggleChildOverlay} style={{ margin: "" }}>
                                 Close
                             </Button>
-                            <Button onClick={this.handleSubmit} style={{ margin: "" }}>
+                            <Button onClick={this.handleSubmit} style={{ margin: "" }} type="submit">
                                 Add
                             </Button>
                         </div>
@@ -216,10 +214,7 @@ export default class AddTask extends React.Component {
         this.focusButton = () => this.button.focus();
         this.toggleScrollButton = () => this.setState({ useTallContent: !this.state.useTallContent });
         this.isOpenCallback = (childisOpen) => this.setState({isOpen: childisOpen});
-        this.formCallback = (formData) => {
-            this.props.formCallback(formData);
-            // console.log(formData)
-        };
+        this.formCallback = (formData) => this.props.formCallback(formData);
         // form fields
         // this.handleNameChange = this.handleNameChange.bind(this);
 
@@ -234,7 +229,7 @@ export default class AddTask extends React.Component {
                 position:"absolute"
             }
         const classes = classNames(Classes.CARD, Classes.ELEVATION_4, OVERLAY_EXAMPLE_CLASS);
-        // console.log("classes: " + classes);
+
         return (
             <div>
                 <Button elementRef={this.refHandlers.button} onClick={this.handleOpen} intent="success">
@@ -255,13 +250,3 @@ export default class AddTask extends React.Component {
         );
     }
 }
-
-
-                        // <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        //     <Button intent={Intent.DANGER} onClick={this.handleClose} style={{ margin: "" }}>
-                        //         Close
-                        //     </Button>
-                        //     <Button onClick={this.focusButton} style={{ margin: "" }}>
-                        //         Focus button
-                        //     </Button>
-                        // </div>

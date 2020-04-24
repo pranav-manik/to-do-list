@@ -42,14 +42,14 @@ function Item(props) {
 		<Card interactive={true} elevation={Elevation.TWO} style={CardStyle}>
 			<h4>{props.name}</h4>
 			<p>{props.time} : {props.description}</p>
-			<h5><a href="#">Edit</a> | <a href="#">Delete</a></h5>
+			<h5><a href="#">Edit</a> | <a href="#" id={props.id} onClick={props.deleteTask} >Delete</a></h5>
 		</Card>
 	);
 }
 
 function Day(props) {
 	var tasksList = props.description.sort((a,b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time)).map((task, index) => {
- 				return(<Item id={task.id} name={task.name} time={formatTime(task.time)} description={task.description} />);
+ 				return(<Item id={task.id} name={task.name} time={formatTime(task.time)} description={task.description} deleteTask={props.deleteTask(task.id)}/>);
  			});
 	return(
 		<div>
@@ -101,38 +101,43 @@ class List extends React.Component {
 			]
 		}
 
-		this.formCallback = (formData) => {
-            // this.props.formCallback(formData);
-            // console.log(formData)
-            formData["id"] = 7;
+		this.formCallback = this.formCallback.bind(this);
+		this.deleteTask = this.deleteTask.bind(this);
+
+
+	}
+
+	formCallback = (formData) => {
+   
+            formData["id"] = parseInt(Math.random()*100).toString();
             formData["done"] = false;
             this.state.tasks.push(formData);
             this.forceUpdate(); 
             // this.setState({tasks: tasksUpdated});
             console.log(this.state.tasks);
         };
-	}
+
+    deleteTask = (event) => {
+    	var id = event.target.id
+    	// console.log(event.target.id)
+        	this.state.tasks = this.state.tasks.filter((task) => {
+        		return task.id !== id;
+        	});
+        	this.forceUpdate();
+        }
 	
 	render() {
-		// var tasks = ["Read", "Cook", "Clean", "Code"];
-		
-		// tasks.sort((a,b) => a.time > b.time);
+
 		var tasksList = this.state.tasks.sort((a,b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time)).map((task, index) => {
 				return(<Item name={task.name} time={task.time}/>);
 			});
-		console.log(this.state.tasks);
-		var taskDaysGrouped = groupBy(this.state.tasks, 'date');
-		// console.log(taskDaysGrouped);
-		var taskDayKeys = Object.keys(taskDaysGrouped)
 
+		var taskDaysGrouped = groupBy(this.state.tasks, 'date');
+		var taskDayKeys = Object.keys(taskDaysGrouped)
 		var taskDaysList = taskDayKeys.map((date, index) => {
-			// console.log(day);
-			// console.log(JSON.stringify(taskDaysGrouped[day]));
-			return(<Day date={date} description={taskDaysGrouped[date]}/>);
+			return(<Day date={date} description={taskDaysGrouped[date]} deleteTask={(id) => this.deleteTask} />);
 		});
-		// taskDaysGrouped.((a,b) => new Date(a.day) - new Date(b.day)).map((day, index) => {
-		// 	return(<p>{day}</p>);
-		// });
+
 		return(
 				<div>
 					<AddTask formCallback={this.formCallback} />
@@ -142,40 +147,5 @@ class List extends React.Component {
 	}
 }
 
-
-// class AddTaskButton extends React.Component {
-
-// 	constructor()
-
-// }
-
-// class Day extends React.Component {
-// 	constructor(props) {
-// 		super(props);
-
-// 		this.state = {
-// 			date: "",
-// 			tasks: []
-// 		}
-// 	}
-
-// 	setTasks = (date, tasks) => {
-// 		this.setState({
-// 			date: date,
-// 			tasks: tasks
-// 		});
-// 	}
-
-// 	render() {
-// 		var tasksList = this.state.tasks.sort((a,b) => new Date(a.day + ' ' + a.time) - new Date(b.day + ' ' + b.time)).map((task, index) => {
-// 				return(<Item name={task.name} time={task.time} description={task.description} />);
-// 			});
-// 		return(
-// 			<div>
-// 				<p>{this.state.date}</p>
-// 				{tasksList}
-// 			</div>);
-// 	}
-// }
 
 export default List;
