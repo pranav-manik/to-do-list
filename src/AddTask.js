@@ -14,7 +14,7 @@
  */
 import classNames from "classnames";
 import * as React from "react";
-import { Button, Classes, Code, H3, H5, Intent, Overlay, Switch, Icon, FormGroup, InputGroup, HTMLSelect } from "@blueprintjs/core";
+import { Button, Classes, Code, H3, H5, Intent, Overlay, Switch, Icon, FormGroup, InputGroup, HTMLSelect, Label } from "@blueprintjs/core";
 import { handleBooleanChange, handleNumberChange, handleStringChange } from "@blueprintjs/docs-theme";
 import { TimePicker, TimePrecision, DateInput } from "@blueprintjs/datetime";
 import './blueprint-datetime.css'
@@ -47,7 +47,9 @@ const jsDateFormatter = {
     placeholder: "M/D/YYYY",
 };
 
-
+var FormError = (props) => {
+    return (<p style={{color: "red", display: props.display}}>Please fill out task name</p>);
+}
 
 class Form extends React.Component {
     constructor(props) {
@@ -56,9 +58,10 @@ class Form extends React.Component {
         this.state = {
             taskName: "",
             taskTime: "12:00",
-            taskDate: new Date(),
+            taskDate: new Date().toLocaleDateString(),
             taskDescription: "",
-            isOpen: false
+            isOpen: false,
+            errorDisplay: "none"
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -84,23 +87,38 @@ class Form extends React.Component {
     this.setState({
       isOpen: this.state.isOpen
     });
-    this.props.parentCallback(this.state.isOpen);
-    console.log(this.state.isOpen);
+    this.props.parentOpenCallback(this.state.isOpen);
+    // console.log(this.state.isOpen);
   }
 
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.toggleChildOverlay()
-    // this.props.parentCallback(this.state.isOpen);
-    console.log(this.state);
+    // verify field has been filled
+    if (this.state.taskName === "") {
+        this.setState({errorDisplay: "block"});
+    }
+    // fields have been filled
+    else {
+        this.setState({errorDisplay: "none"});
+        var formData = {
+            name: this.state.taskName,
+            time: this.state.taskTime,
+            date: this.state.taskDate,
+            description: this.state.taskDescription
+        };
+        this.props.formCallback(formData);
+        this.toggleChildOverlay();
+    }
+    // if ()
+    // console.log(formData);
   }
 
     render() {
         return(
             <form>
                 <FormGroup
-                            helperText="Helper text with details..."
+                            helperText="Brief name for task"
                             label="Task Name"
                             labelFor="text-name"
                             labelInfo="(required)"
@@ -115,8 +133,8 @@ class Form extends React.Component {
                                 required
                             />
                         </FormGroup>
+                        <FormError display={this.state.errorDisplay}/>
                         <FormGroup
-                            helperText="Helper text with details..."
                             label="Time"
                             labelFor="text-time"
                             labelInfo="(required)"
@@ -131,12 +149,14 @@ class Form extends React.Component {
                                 required
                             />
                         </FormGroup>
+                        <Label htmlFor="task-date"> Date
                         <DateInput 
                             {...jsDateFormatter}
                             defaultValue={new Date()} 
                             onChange={(selectedDate,isUserChange) => this.setState({ taskDate : selectedDate.toLocaleDateString()})}
                             required
                         />
+                        </Label>
                         <FormGroup
                             helperText="Brief description of task"
                             label="Description"
@@ -180,6 +200,7 @@ export default class AddTask extends React.Component {
             isOpen: false,
             usePortal: true,
             useTallContent: false,
+            formData: []
         };
         this.refHandlers = {
             button: (ref) => (this.button = ref),
@@ -195,6 +216,10 @@ export default class AddTask extends React.Component {
         this.focusButton = () => this.button.focus();
         this.toggleScrollButton = () => this.setState({ useTallContent: !this.state.useTallContent });
         this.isOpenCallback = (childisOpen) => this.setState({isOpen: childisOpen});
+        this.formCallback = (formData) => {
+            this.props.formCallback(formData);
+            // console.log(formData)
+        };
         // form fields
         // this.handleNameChange = this.handleNameChange.bind(this);
 
@@ -219,7 +244,7 @@ export default class AddTask extends React.Component {
                         <H3>Add Task</H3>
 
 
-                        <Form isOpen={this.state.isOpen} parentCallback = {this.isOpenCallback}/>
+                        <Form isOpen={this.state.isOpen} parentOpenCallback = {this.isOpenCallback} formCallback = {this.formCallback} />
 
 
                         <br />

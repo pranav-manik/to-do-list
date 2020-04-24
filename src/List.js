@@ -4,15 +4,23 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import DayTree from './DayTree'
 import AddTask from './AddTask'
 
-var getWeekday = (day) => {
-	var d = new Date(day);
+var getWeekday = (date) => {
+	var d = new Date(date);
 	var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-	var _day = day.split('/');
-	var dateObj = {month: _day[1], day: _day[2], year: _day[0]};
+	return weekday[d.getDay()] + ", " + date;
+};
 
-	return weekday[d.getDay()] + ", " + dateObj.month + '/' + dateObj.day + '/' + dateObj.year;;
-}; 
+var formatTime = (time) => {
+	var timeFormated = time.split(':')
+	if (timeFormated[0] > "12") {
+		time = (timeFormated[0] - 12) + ":" + timeFormated[1] + " PM"
+	}
+	else {
+		time = time + " AM"
+	}
+	return time
+} 
 
 var groupBy = function(xs, key) {
   return xs.reduce(function(rv, x) {
@@ -40,8 +48,8 @@ function Item(props) {
 }
 
 function Day(props) {
-	var tasksList = props.description.sort((a,b) => new Date(a.day + ' ' + a.time) - new Date(b.day + ' ' + b.time)).map((task, index) => {
- 				return(<Item id={task.id} name={task.name} time={task.time} description={task.description} />);
+	var tasksList = props.description.sort((a,b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time)).map((task, index) => {
+ 				return(<Item id={task.id} name={task.name} time={formatTime(task.time)} description={task.description} />);
  			});
 	return(
 		<div>
@@ -52,63 +60,82 @@ function Day(props) {
 }
 
 class List extends React.Component {
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			tasks: [
+				{
+					id: "1",
+					name: "Read",
+					description: "Read Thinking with Strangers",
+					time: "14:30",
+					date: "4/21/2020",
+					done: false
+				},
+				{
+					id: "2",
+					name: "Cook",
+					description: "Make Stir Fry",
+					time: "16:20",
+					date: "4/20/2020",
+					done: false
+				},
+				{
+					id: "3",
+					name: "Clean",
+					description: "Clean bathroom and kitchen",
+					time: "18:00",
+					date: "4/20/2020",
+					done: false
+				},
+				{
+					id: "4",
+					name: "Code",
+					description: "Code some React and Leetcode",
+					time: "13:30",
+					date: "4/23/2020",
+					done: false
+				}
+			]
+		}
+
+		this.formCallback = (formData) => {
+            // this.props.formCallback(formData);
+            // console.log(formData)
+            formData["id"] = 7;
+            formData["done"] = false;
+            this.state.tasks.push(formData);
+            this.forceUpdate(); 
+            // this.setState({tasks: tasksUpdated});
+            console.log(this.state.tasks);
+        };
+	}
 	
 	render() {
 		// var tasks = ["Read", "Cook", "Clean", "Code"];
-		var tasks = [
-			{
-				id: "1",
-				name: "Read",
-				description: "Read Thinking with Strangers",
-				time: "2:30 PM",
-				day: "2020/04/21",
-				done: false
-			},
-			{
-				id: "2",
-				name: "Cook",
-				description: "Make Stir Fry",
-				time: "4:20 PM",
-				day: "2020/04/20",
-				done: false
-			},
-			{
-				id: "3",
-				name: "Clean",
-				description: "Clean bathroom and kitchen",
-				time: "6:00 PM",
-				day: "2020/04/20",
-				done: false
-			},
-			{
-				id: "4",
-				name: "Code",
-				description: "Code some React and Leetcode",
-				time: "1:30 PM",
-				day: "2020/04/20",
-				done: false
-			}
-		];
+		
 		// tasks.sort((a,b) => a.time > b.time);
-		var tasksList = tasks.sort((a,b) => new Date(a.day + ' ' + a.time) - new Date(b.day + ' ' + b.time)).map((task, index) => {
+		var tasksList = this.state.tasks.sort((a,b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time)).map((task, index) => {
 				return(<Item name={task.name} time={task.time}/>);
 			});
-
-		var taskDaysGrouped = groupBy(tasks, 'day');
+		console.log(this.state.tasks);
+		var taskDaysGrouped = groupBy(this.state.tasks, 'date');
 		// console.log(taskDaysGrouped);
 		var taskDayKeys = Object.keys(taskDaysGrouped)
 
-		var taskDaysList = taskDayKeys.map((day, index) => {
+		var taskDaysList = taskDayKeys.map((date, index) => {
 			// console.log(day);
 			// console.log(JSON.stringify(taskDaysGrouped[day]));
-			return(<Day date={day} description={taskDaysGrouped[day]}/>);
+			return(<Day date={date} description={taskDaysGrouped[date]}/>);
 		});
 		// taskDaysGrouped.((a,b) => new Date(a.day) - new Date(b.day)).map((day, index) => {
 		// 	return(<p>{day}</p>);
 		// });
 		return(
 				<div>
-					<AddTask />
+					<AddTask formCallback={this.formCallback} />
 					{taskDaysList}
 				</div>
 				);
