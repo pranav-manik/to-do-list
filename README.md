@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Run locally
 
 In the project directory, you can run:
 
@@ -12,5 +12,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-![Demo](https://pranav-manik.github.io/to-do-list)
+
+### [Demo](https://pranav-manik.github.io/to-do-list)
+
+
+<br />
+<br />
 ![](https://github.com/pranav-manik/to-do-list/blob/master/to-do-record.gif)
