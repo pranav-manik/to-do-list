@@ -37,6 +37,15 @@ var groupBy = function(xs, key) {
   }, {});
 };
 
+const DayStyle = {
+	marginLeft: "1em",
+	marginTop: "2em",
+	marginBottom: "2em",
+	fontSize: "15px",
+	textDecoration: "underline",
+	fontWeight: 500
+}
+
 
 const CardStyle = {
 	width: "40em",
@@ -68,7 +77,7 @@ function Day(props) {
  			});
 	return(
 		<div>
-			<p>{getWeekday(props.date)}</p>
+			<p style={DayStyle}>{getWeekday(props.date)}</p>
 			{tasksList}
 		</div>
 	);

@@ -26,10 +26,17 @@ const OVERLAY_EXAMPLE_CLASS = "overlay-transition";
 
 
 // confirm message for task
-export const ConfirmToaster = Toaster.create({
+const ConfirmToaster = Toaster.create({
     className: "recipe-toaster",
     position: Position.TOP,
 });
+
+
+// styling for add task
+const addTaskButtonStyle = {
+        marginTop: "2em",
+        marginLeft: "37em"
+}
 
 
 // Date formatter
@@ -236,6 +243,8 @@ export default class AddTask extends React.Component {
 
 
     }
+
+
     render() {
         const overlayStyle = {
                 width: "500px",
@@ -247,7 +256,7 @@ export default class AddTask extends React.Component {
 
         return (
             <div>
-                <Button elementRef={this.refHandlers.button} onClick={this.handleOpen} intent="success">
+                <Button elementRef={this.refHandlers.button} onClick={this.handleOpen} intent="success" style={addTaskButtonStyle}>
                     <Icon icon="document" />  &nbsp;&nbsp; Add Task</Button>
                 <Overlay onClose={this.handleClose} className={Classes.OVERLAY_SCROLL_CONTAINER} {...this.state}>
                     <div className={classes} style={{width: "500px", left: "30%", position:"absolute"}}>
