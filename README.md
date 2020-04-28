@@ -16,6 +16,4 @@ You will also see any lint errors in the console.
 ### [Demo](https://pranav-manik.github.io/to-do-list)
 
 
-<br />
-<br />
 ![](https://github.com/pranav-manik/to-do-list/blob/master/to-do-record.gif)
