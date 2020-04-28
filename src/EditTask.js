@@ -14,22 +14,13 @@
  */
 import classNames from "classnames";
 import * as React from "react";
-import { Button, Classes, Code, H3, H5, Intent, Overlay, Switch, Icon, FormGroup, InputGroup, HTMLSelect, Label, Position, Toaster } from "@blueprintjs/core";
+import { Button, Classes, Code, H3, H5, Intent, Overlay, Switch, Icon, FormGroup, InputGroup, HTMLSelect, Label } from "@blueprintjs/core";
 import { handleBooleanChange, handleNumberChange, handleStringChange } from "@blueprintjs/docs-theme";
 import { TimePicker, TimePrecision, DateInput } from "@blueprintjs/datetime";
-
 import './blueprint-datetime.css'
 import './_transitions.scss';
 
 const OVERLAY_EXAMPLE_CLASS = "overlay-transition";
-
-
-
-// confirm message for task
-export const ConfirmToaster = Toaster.create({
-    className: "recipe-toaster",
-    position: Position.TOP,
-});
 
 
 // Date formatter
@@ -53,15 +44,16 @@ var DateError = (props) => {
 
 
 // form component
-class Form extends React.Component {
+class EditForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            taskName: "",
-            taskTime: "12:00",
-            taskDate: new Date().toLocaleDateString(),
-            taskDescription: "",
+            taskId: props.currEditTask.id,
+            taskName: props.currEditTask.name,
+            taskTime: props.currEditTask.time,
+            taskDate: props.currEditTask.date,
+            taskDescription: props.currEditTask.description,
             isOpen: false,
             nameErrorDisplay: "none",
             dateErrorDisplay: "none"
@@ -110,20 +102,14 @@ class Form extends React.Component {
         this.setState({nameErrorDisplay: "none"});
         this.setState({dateErrorDisplay: "none"});
         var formData = {
+            id: this.state.taskId,
             name: this.state.taskName,
             time: this.state.taskTime,
             date: this.state.taskDate,
             description: this.state.taskDescription
         };
-        this.props.addTaskCallback(formData);
+        this.props.editTaskCallback(formData);
         this.toggleChildOverlay();
-        ConfirmToaster.show({ 
-                            message: "Task Added",
-                            icon: "tick",
-                            intent: Intent.SUCCESS,
-                            timeout: 700
-
-                        });
     }
   }
 
@@ -131,6 +117,7 @@ class Form extends React.Component {
         return(
             <form>
                 <FormGroup
+                            helperText="Brief name for task"
                             label="Task Name"
                             labelFor="text-name"
                             labelInfo="(required)"
@@ -155,7 +142,7 @@ class Form extends React.Component {
                                 id="taskTime"
                                 name="taskTime"
                                 className={Classes.LABEL}
-                                defaultValue={new Date(this.state.taskTime)}
+                                defaultValue={new Date('Sun Dec 31 1899 ' + this.state.taskTime)}
                                 useAmPm={true}
                                 onChange={(time) => this.setState({taskTime : time.toTimeString().split(':')[0] + ":" + time.toTimeString().split(':')[1]})}
                                 required
@@ -164,14 +151,13 @@ class Form extends React.Component {
                         <Label htmlFor="task-date"> Date
                         <DateInput 
                             {...jsDateFormatter}
-                            defaultValue={new Date()} 
+                            defaultValue={new Date(this.state.taskDate)} 
                             onChange={(selectedDate,isUserChange) => this.setState({ taskDate : selectedDate == null ? selectedDate : selectedDate.toLocaleDateString()})}
                             required
                         />
                         </Label>
                         <DateError display={this.state.dateErrorDisplay} />
                         <FormGroup
-                            helperText="Brief description of task"
                             label="Description"
                             labelFor="text-description"
                         >
@@ -191,7 +177,7 @@ class Form extends React.Component {
                                 Close
                             </Button>
                             <Button onClick={this.handleSubmit} style={{ margin: "" }} type="submit">
-                                Add
+                                Edit
                             </Button>
                         </div>
             </form>
@@ -201,19 +187,20 @@ class Form extends React.Component {
 
 
 // Overlay for adding task
-export default class AddTask extends React.Component {
+export default class EditTask extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            currEditTask: {},
             autoFocus: true,
             canEscapeKeyClose: true,
             canOutsideClickClose: true,
             enforceFocus: true,
             hasBackdrop: true,
-            isOpen: false,
+            // isOpen: false,
             usePortal: true,
             useTallContent: false,
-            formData: []
+            formData: ""
         };
         this.refHandlers = {
             button: (ref) => (this.button = ref),
@@ -224,12 +211,15 @@ export default class AddTask extends React.Component {
         this.handleEscapeKeyChange = handleBooleanChange(canEscapeKeyClose => this.setState({ canEscapeKeyClose }));
         this.handleUsePortalChange = handleBooleanChange(usePortal => this.setState({ usePortal }));
         this.handleOutsideClickChange = handleBooleanChange(val => this.setState({ canOutsideClickClose: val }));
-        this.handleOpen = () => this.setState({ isOpen: true });
+        this.handleOpen = async(task) => {await this.setState({ 
+                                        isOpen: true,
+                                        currEditTask: task[0]        
+                                    })};
         this.handleClose = () => this.setState({ isOpen: false, useTallContent: false });
         this.focusButton = () => this.button.focus();
         this.toggleScrollButton = () => this.setState({ useTallContent: !this.state.useTallContent });
         this.isOpenCallback = (childisOpen) => this.setState({isOpen: childisOpen});
-        this.addTaskCallback = (formData) => this.props.addTaskCallback(formData);
+        this.editTaskCallback = (formData) => this.props.editTaskCallback(formData);
         // form fields
         // this.handleNameChange = this.handleNameChange.bind(this);
 
@@ -247,17 +237,16 @@ export default class AddTask extends React.Component {
 
         return (
             <div>
-                <Button elementRef={this.refHandlers.button} onClick={this.handleOpen} intent="success">
-                    <Icon icon="document" />  &nbsp;&nbsp; Add Task</Button>
                 <Overlay onClose={this.handleClose} className={Classes.OVERLAY_SCROLL_CONTAINER} {...this.state}>
                     <div className={classes} style={{width: "500px", left: "30%", position:"absolute"}}>
-                        <H3>Add Task</H3>
+                        <H3>Edit Task</H3>
 
 
-                        <Form
+                        <EditForm
+                            currEditTask={this.state.currEditTask}
                             isOpen={this.state.isOpen}
                             parentOpenCallback = {this.isOpenCallback}
-                            addTaskCallback = {this.addTaskCallback}
+                            editTaskCallback = {this.editTaskCallback}
                         />
 
 

@@ -3,7 +3,10 @@ import { Button, Card, Elevation, Icon, Intent, ITreeNode, Position, Tooltip, Tr
 import "@blueprintjs/core/lib/css/blueprint.css";
 import DayTree from './DayTree'
 import AddTask from './AddTask'
+import EditTask from './EditTask'
 
+
+// finds weekday out
 var getWeekday = (date) => {
 	var d = new Date(date);
 	var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -11,6 +14,8 @@ var getWeekday = (date) => {
 	return weekday[d.getDay()] + ", " + date;
 };
 
+
+// formats time for display
 var formatTime = (time) => {
 	var timeFormated = time.split(':')
 	if (timeFormated[0] > "12") {
@@ -22,6 +27,9 @@ var formatTime = (time) => {
 	return time
 } 
 
+
+
+// orders json keys
 var groupBy = function(xs, key) {
   return xs.reduce(function(rv, x) {
     (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -39,17 +47,24 @@ const CardStyle = {
 
 function Item(props) {
 	return(
-		<Card interactive={true} elevation={Elevation.TWO} style={CardStyle}>
+		<Card interactive={true} elevation={Elevation.TWO} style={CardStyle} id={props.id}>
 			<h4>{props.name}</h4>
 			<p>{props.time} : {props.description}</p>
-			<h5><a href="#">Edit</a> | <a href="#" id={props.id} onClick={props.deleteTask} >Delete</a></h5>
+			<h5><a href="#" id={props.id} onClick={props.editTask}>Edit</a> | <a href="#" id={props.id} onClick={props.deleteTask} >Delete</a></h5>
 		</Card>
 	);
 }
 
 function Day(props) {
 	var tasksList = props.description.sort((a,b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time)).map((task, index) => {
- 				return(<Item id={task.id} name={task.name} time={formatTime(task.time)} description={task.description} deleteTask={props.deleteTask(task.id)}/>);
+ 				return(<Item
+		 					id={task.id}
+		 					name={task.name}
+		 					time={formatTime(task.time)}
+		 					description={task.description}
+		 					editTask={props.editTask}
+		 					deleteTask={props.deleteTask(task.id)}
+ 						/>);
  			});
 	return(
 		<div>
@@ -98,28 +113,57 @@ class List extends React.Component {
 					date: "4/23/2020",
 					done: false
 				}
-			]
+			],
+			curEditTask: []
 		}
 
-		this.formCallback = this.formCallback.bind(this);
+		this.addTaskCallback = this.addTaskCallback.bind(this);
+		this.editTaskCallback = this.editTaskCallback.bind(this);
+		this.editTask = this.editTask.bind(this);
 		this.deleteTask = this.deleteTask.bind(this);
+
+		this.editComponent = React.createRef();
 
 
 	}
 
-	formCallback = (formData) => {
+
+	// adds task
+	addTaskCallback = (formData) => {
    
             formData["id"] = parseInt(Math.random()*100).toString();
             formData["done"] = false;
             this.state.tasks.push(formData);
             this.forceUpdate(); 
             // this.setState({tasks: tasksUpdated});
-            console.log(this.state.tasks);
         };
+
+    // calls edit overlay
+    editTask = (event) => {
+    	var id = event.target.parentElement.parentElement.id;
+    	var editTask = this.state.tasks.filter((task) => {
+        		return task.id == id;
+        });
+        this.setState({
+        	curEditTask: editTask
+        });
+        this.editComponent.current.handleOpen(editTask);
+    }
+
+	// edits task
+	editTaskCallback = (formData) => {
+   			
+            this.state.tasks = this.state.tasks.filter((task) => {
+        		return task.id !== formData.id;
+        	});
+            this.state.tasks.push(formData);
+            this.forceUpdate(); 
+        };    
+
 
     deleteTask = (event) => {
     	var id = event.target.id
-    	// console.log(event.target.id)
+
         	this.state.tasks = this.state.tasks.filter((task) => {
         		return task.id !== id;
         	});
@@ -135,12 +179,20 @@ class List extends React.Component {
 		var taskDaysGrouped = groupBy(this.state.tasks, 'date');
 		var taskDayKeys = Object.keys(taskDaysGrouped)
 		var taskDaysList = taskDayKeys.map((date, index) => {
-			return(<Day date={date} description={taskDaysGrouped[date]} deleteTask={(id) => this.deleteTask} />);
+			return(<Day
+				date={date}
+				description={taskDaysGrouped[date]}
+				editTask={this.editTask}
+				deleteTask={(id) => this.deleteTask} />);
 		});
 
 		return(
 				<div>
-					<AddTask formCallback={this.formCallback} />
+					<AddTask addTaskCallback={this.addTaskCallback} />
+					<EditTask 
+						ref={this.editComponent}
+						editTaskCallback={this.editTaskCallback}
+					/>
 					{taskDaysList}
 				</div>
 				);
