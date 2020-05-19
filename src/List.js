@@ -6,6 +6,41 @@ import AddTask from './AddTask'
 import EditTask from './EditTask'
 
 
+const initTasks = [
+	{
+		id: "1",
+		name: "Read",
+		description: "Read Talking To Strangers",
+		time: "14:30",
+		date: "4/21/2020",
+		done: false
+	},
+	{
+		id: "2",
+		name: "Cook",
+		description: "Make Stir Fry",
+		time: "16:20",
+		date: "4/20/2020",
+		done: false
+	},
+	{
+		id: "3",
+		name: "Clean",
+		description: "Clean bathroom and kitchen",
+		time: "18:00",
+		date: "4/20/2020",
+		done: false
+	},
+	{
+		id: "4",
+		name: "Code",
+		description: "Code some React and Leetcode",
+		time: "13:30",
+		date: "4/23/2020",
+		done: false
+	}
+]
+
 // finds weekday out
 var getWeekday = (date) => {
 	var d = new Date(date);
@@ -89,40 +124,7 @@ class List extends React.Component {
 		super(props);
 
 		this.state = {
-			tasks: [
-				{
-					id: "1",
-					name: "Read",
-					description: "Read Thinking with Strangers",
-					time: "14:30",
-					date: "4/21/2020",
-					done: false
-				},
-				{
-					id: "2",
-					name: "Cook",
-					description: "Make Stir Fry",
-					time: "16:20",
-					date: "4/20/2020",
-					done: false
-				},
-				{
-					id: "3",
-					name: "Clean",
-					description: "Clean bathroom and kitchen",
-					time: "18:00",
-					date: "4/20/2020",
-					done: false
-				},
-				{
-					id: "4",
-					name: "Code",
-					description: "Code some React and Leetcode",
-					time: "13:30",
-					date: "4/23/2020",
-					done: false
-				}
-			],
+			tasks: [],
 			curEditTask: []
 		}
 
@@ -136,13 +138,31 @@ class List extends React.Component {
 
 	}
 
+	componentWillMount() {
+		// localStorage.removeItem('tasks');
+		var localStorageTasks = JSON.parse(localStorage.getItem('tasks'));
+		if (localStorageTasks === null) {
+		  this.setState({
+			tasks: initTasks
+		  });
+		  localStorage.setItem('tasks',JSON.stringify(initTasks));
+		  console.log("localStorage tasks", JSON.stringify(initTasks));
+		}
+		else {
+		  console.log(localStorageTasks);
+		  this.setState({
+			tasks: localStorageTasks
+		  });
+		}
+	  }
 
 	// adds task
 	addTaskCallback = (formData) => {
    
             formData["id"] = parseInt(Math.random()*100).toString();
             formData["done"] = false;
-            this.state.tasks.push(formData);
+			this.state.tasks.push(formData);
+			localStorage.setItem('tasks',JSON.stringify(this.state.tasks));
             this.forceUpdate(); 
             // this.setState({tasks: tasksUpdated});
         };
@@ -165,7 +185,8 @@ class List extends React.Component {
             this.state.tasks = this.state.tasks.filter((task) => {
         		return task.id !== formData.id;
         	});
-            this.state.tasks.push(formData);
+			this.state.tasks.push(formData);
+			localStorage.setItem('tasks',JSON.stringify(this.state.tasks));
             this.forceUpdate(); 
         };    
 
@@ -175,7 +196,8 @@ class List extends React.Component {
 
         	this.state.tasks = this.state.tasks.filter((task) => {
         		return task.id !== id;
-        	});
+			});
+			localStorage.setItem('tasks',JSON.stringify(this.state.tasks));
         	this.forceUpdate();
         }
 	
