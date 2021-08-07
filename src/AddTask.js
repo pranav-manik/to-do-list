@@ -17,6 +17,7 @@ import * as React from "react";
 import { Button, Classes, Code, H3, H5, Intent, Overlay, Switch, Icon, FormGroup, InputGroup, HTMLSelect, Label, Position, Toaster } from "@blueprintjs/core";
 import { handleBooleanChange, handleNumberChange, handleStringChange } from "@blueprintjs/docs-theme";
 import { TimePicker, TimePrecision, DateInput } from "@blueprintjs/datetime";
+import "./index.css";
 
 import './blueprint-datetime.css'
 import './_transitions.scss';
@@ -252,14 +253,14 @@ export default class AddTask extends React.Component {
                 top:"40%",
                 position:"absolute"
             }
-        const classes = classNames(Classes.CARD, Classes.ELEVATION_4, OVERLAY_EXAMPLE_CLASS);
+        const classes = classNames(Classes.CARD, Classes.ELEVATION_4, OVERLAY_EXAMPLE_CLASS, "task-modal");
 
         return (
             <div>
-                <Button elementRef={this.refHandlers.button} onClick={this.handleOpen} intent="success" style={addTaskButtonStyle}>
+                <Button elementRef={this.refHandlers.button} onClick={this.handleOpen} intent="success" className="add-task-button">
                     <Icon icon="document" />  &nbsp;&nbsp; Add Task</Button>
                 <Overlay onClose={this.handleClose} className={Classes.OVERLAY_SCROLL_CONTAINER} {...this.state}>
-                    <div className={classes} style={{width: "500px", left: "30%", position:"absolute"}}>
+                    <div className={classes} >
                         <H3>Add Task</H3>
 
 

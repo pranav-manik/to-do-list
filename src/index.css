@@ -11,3 +11,49 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.task-card {
+  width: 40em;
+  margin: 1em;
+  padding: 2em;
+  margin-left: 4em;
+}
+.add-task-button {
+  width: 100px;
+  margin-right: 75em;
+  top: 40%;
+  /* position: block; */
+  float: right
+
+}
+
+.task-modal {
+  width: 35% !important;
+  left: 35% !important;
+  top: 5% !important;
+} 
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .task-card {
+    width: 23em;
+    margin: 1em;
+    padding: 2em;
+    margin-left: 4em;
+  }
+
+  .add-task-button {
+    /* width: 100px; */
+    margin-right: 3em;
+    float: right;
+  
+  }
+
+  .task-modal {
+    width: 90% !important;
+    left: 5% !important;
+    top: 5% !important;
+    position: absolute !important;
+  }
+
+}

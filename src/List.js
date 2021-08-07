@@ -4,6 +4,7 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import DayTree from './DayTree'
 import AddTask from './AddTask'
 import EditTask from './EditTask'
+import "./index.css";
 
 
 const initTasks = [
@@ -83,7 +84,7 @@ const DayStyle = {
 
 
 const CardStyle = {
-	width: "40em",
+	width: "40vw",
 	margin: "1em",
 	padding: "2em",
 	marginLeft: "4em"
@@ -91,7 +92,7 @@ const CardStyle = {
 
 function Item(props) {
 	return(
-		<Card interactive={true} elevation={Elevation.TWO} style={CardStyle} id={props.id}>
+		<Card interactive={true} elevation={Elevation.TWO} id={props.id} className={"task-card"} >
 			<h4>{props.name}</h4>
 			<p>{props.time} : {props.description}</p>
 			<h5><a href="#" id={props.id} onClick={props.editTask}>Edit</a> | <a href="#" id={props.id} onClick={props.deleteTask} >Delete</a></h5>

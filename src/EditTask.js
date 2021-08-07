@@ -233,7 +233,7 @@ export default class EditTask extends React.Component {
                 top:"40%",
                 position:"absolute"
             }
-        const classes = classNames(Classes.CARD, Classes.ELEVATION_4, OVERLAY_EXAMPLE_CLASS);
+        const classes = classNames(Classes.CARD, Classes.ELEVATION_4, OVERLAY_EXAMPLE_CLASS, "task-modal");
 
         return (
             <div>
