@@ -5,7 +5,7 @@ import DayTree from './DayTree'
 import AddTask from './AddTask'
 import EditTask from './EditTask'
 import "./index.css";
-
+import { Link } from 'react-router-dom';
 
 const initTasks = [
 	{
@@ -63,7 +63,17 @@ var formatTime = (time) => {
 	return time
 } 
 
-
+// format hyperlinks in description
+var formatDescription = (desc) => desc.split(" ")
+            .map(i => {
+                if (i.includes("http")) {
+					i = <a href={i} target="_blank">{i}</a>
+                }
+				else {
+					i += " "
+				}
+                return i
+            });
 
 // orders json keys
 var groupBy = function(xs, key) {
@@ -91,6 +101,16 @@ const CardStyle = {
 }
 
 function Item(props) {
+	// var t  = props.description.split(" ")
+    //         .map(i => {
+                
+    //             if (i.includes("http")) {
+    //                 i = `<a target="_blank" href="${i}">${i}</a>`
+    //                 // i = `<Link to={{ pathname: ${i} }} target="_blank" />`
+    //             }
+    //             return i
+    //             console.log(i)
+    //         }).join(" ");
 	return(
 		<Card interactive={true} elevation={Elevation.TWO} id={props.id} className={"task-card"} >
 			<h4>{props.name}</h4>
@@ -106,7 +126,7 @@ function Day(props) {
 		 					id={task.id}
 		 					name={task.name}
 		 					time={formatTime(task.time)}
-		 					description={task.description}
+		 					description={formatDescription(task.description)}
 		 					editTask={props.editTask}
 		 					deleteTask={props.deleteTask(task.id)}
  						/>);
