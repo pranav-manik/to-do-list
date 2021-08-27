@@ -5,7 +5,6 @@ import DayTree from './DayTree'
 import AddTask from './AddTask'
 import EditTask from './EditTask'
 import "./index.css";
-import { Link } from 'react-router-dom';
 
 const initTasks = [
 	{
