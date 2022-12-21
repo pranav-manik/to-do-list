@@ -19,7 +19,7 @@ const initTasks = [
 		id: "2",
 		name: "Cook",
 		description: "Make Stir Fry",
-		time: "16:20",
+		time: "16:30",
 		date: "4/20/2020",
 		done: false
 	},
