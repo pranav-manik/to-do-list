@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/to-do-list/static/css/main.853522f8.chunk.css",
-    "main.js": "/to-do-list/static/js/main.28dc13f3.chunk.js",
-    "main.js.map": "/to-do-list/static/js/main.28dc13f3.chunk.js.map",
-    "runtime-main.js": "/to-do-list/static/js/runtime-main.45201a91.js",
-    "runtime-main.js.map": "/to-do-list/static/js/runtime-main.45201a91.js.map",
-    "static/css/2.80732dea.chunk.css": "/to-do-list/static/css/2.80732dea.chunk.css",
-    "static/js/2.013f785d.chunk.js": "/to-do-list/static/js/2.013f785d.chunk.js",
-    "static/js/2.013f785d.chunk.js.map": "/to-do-list/static/js/2.013f785d.chunk.js.map",
+    "main.css": "/to-do-list/static/css/main.0da34b6d.chunk.css",
+    "main.js": "/to-do-list/static/js/main.f1dc0e6a.chunk.js",
+    "main.js.map": "/to-do-list/static/js/main.f1dc0e6a.chunk.js.map",
+    "runtime-main.js": "/to-do-list/static/js/runtime-main.243b4698.js",
+    "runtime-main.js.map": "/to-do-list/static/js/runtime-main.243b4698.js.map",
+    "static/css/2.4a3ed753.chunk.css": "/to-do-list/static/css/2.4a3ed753.chunk.css",
+    "static/js/2.40ad9dc8.chunk.js": "/to-do-list/static/js/2.40ad9dc8.chunk.js",
+    "static/js/2.40ad9dc8.chunk.js.map": "/to-do-list/static/js/2.40ad9dc8.chunk.js.map",
     "index.html": "/to-do-list/index.html",
-    "precache-manifest.33c62c7b4ef6a4928669d84b446d86b6.js": "/to-do-list/precache-manifest.33c62c7b4ef6a4928669d84b446d86b6.js",
+    "precache-manifest.e4e41c2123a41659e938ae52ccb1c93d.js": "/to-do-list/precache-manifest.e4e41c2123a41659e938ae52ccb1c93d.js",
     "service-worker.js": "/to-do-list/service-worker.js",
-    "static/css/2.80732dea.chunk.css.map": "/to-do-list/static/css/2.80732dea.chunk.css.map",
-    "static/css/main.853522f8.chunk.css.map": "/to-do-list/static/css/main.853522f8.chunk.css.map",
-    "static/js/2.013f785d.chunk.js.LICENSE.txt": "/to-do-list/static/js/2.013f785d.chunk.js.LICENSE.txt",
+    "static/css/2.4a3ed753.chunk.css.map": "/to-do-list/static/css/2.4a3ed753.chunk.css.map",
+    "static/css/main.0da34b6d.chunk.css.map": "/to-do-list/static/css/main.0da34b6d.chunk.css.map",
+    "static/js/2.40ad9dc8.chunk.js.LICENSE.txt": "/to-do-list/static/js/2.40ad9dc8.chunk.js.LICENSE.txt",
     "static/media/logo.svg": "/to-do-list/static/media/logo.5d5d9eef.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.45201a91.js",
-    "static/css/2.80732dea.chunk.css",
-    "static/js/2.013f785d.chunk.js",
-    "static/css/main.853522f8.chunk.css",
-    "static/js/main.28dc13f3.chunk.js"
+    "static/js/runtime-main.243b4698.js",
+    "static/css/2.4a3ed753.chunk.css",
+    "static/js/2.40ad9dc8.chunk.js",
+    "static/css/main.0da34b6d.chunk.css",
+    "static/js/main.f1dc0e6a.chunk.js"
   ]
 }
